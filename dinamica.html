@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Dinâmica Direito</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #050a30;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #0a1140;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+    input[type="text"] {
+      padding: 0.8rem;
+      width: 80%;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    button {
+      background-color: #3c5eff;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #2c45c4;
+    }
+    .hidden {
+      display: none;
+    }
+    .question {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .answers button {
+      display: block;
+      width: 100%;
+      margin: 0.5rem 0;
+    }
+    .result {
+      font-size: 1.3rem;
+      margin-top: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="start-screen">
+    <h1>Dinâmica de Direito</h1>
+    <p>Insira seu nome para começar:</p>
+    <input type="text" id="playerName" placeholder="Seu nome aqui..." />
+    <button onclick="startQuiz()">Iniciar Quiz</button>
+  </div>
+
+  <div class="container hidden" id="quiz-screen">
+    <div class="question" id="question-text"></div>
+    <div class="answers" id="answers-container"></div>
+  </div>
+
+  <div class="container hidden" id="result-screen">
+    <h2>Resultado Final</h2>
+    <p id="result-name"></p>
+    <p id="result-score"></p>
+    <p id="result-correct"></p>
+    <p id="result-wrong"></p>
+    <button onclick="location.reload()">Refazer Quiz</button>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "Qual a cor do cavalo branco de Napoleão?",
+        options: ["Preto", "Branco", "Azul", "Marrom"],
+        answer: 1
+      },
+      {
+        question: "Quantos segundos tem um minuto?",
+        options: ["100", "80", "60", "90"],
+        answer: 2
+      },
+      {
+        question: "O que é H2O?",
+        options: ["Álcool", "Sal", "Água", "Gás"],
+        answer: 2
+      },
+      {
+        question: "Quantas patas tem um cachorro?",
+        options: ["2", "3", "4", "6"],
+        answer: 2
+      },
+      {
+        question: "Qual planeta nós vivemos?",
+        options: ["Júpiter", "Terra", "Marte", "Lua"],
+        answer: 1
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let playerName = "";
+
+    function startQuiz() {
+      const input = document.getElementById("playerName");
+      if (!input.value.trim()) {
+        alert("Digite seu nome para começar!");
+        return;
+      }
+      playerName = input.value.trim();
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("quiz-screen").classList.remove("hidden");
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById("question-text").innerText = q.question;
+      const answersContainer = document.getElementById("answers-container");
+      answersContainer.innerHTML = "";
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.innerText = opt;
+        btn.onclick = () => selectAnswer(i);
+        answersContainer.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(choice) {
+      if (choice === questions[currentQuestion].answer) {
+        score++;
+      }
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById("quiz-screen").classList.add("hidden");
+      document.getElementById("result-screen").classList.remove("hidden");
+      document.getElementById("result-name").innerText = `Nome: ${playerName}`;
+      document.getElementById("result-score").innerText = `Pontuação: ${score} de ${questions.length}`;
+      document.getElementById("result-correct").innerText = `Acertos: ${score}`;
+      document.getElementById("result-wrong").innerText = `Erros: ${questions.length - score}`;
+    }
+  </script>
+</body>
+</html>
